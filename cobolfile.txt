@@ -1,0 +1,60 @@
+
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COPYARRAY.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT STUDENT-FILE ASSIGN TO 'students.csv'
+               ORGANIZATION IS LINE SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  STUDENT-FILE.
+       01  STUDENT-REC       PIC X(200).
+
+       WORKING-STORAGE SECTION.
+       01  WS-COUNT          PIC 9(3) VALUE 3.
+       01  CNT               PIC 9(3).
+       01  STUDENT-TABLE.
+           05  STUDENT-ENTRY OCCURS 100 TIMES.
+               10 T-ID       PIC X(5).
+               10 T-NAME     PIC X(30).
+               10 T-AGE      PIC X(3).
+               10 T-GRADE    PIC X(2).
+
+       PROCEDURE DIVISION.
+       MAIN.
+           *> Populate table (example)
+           MOVE "00001"       TO T-ID(1)
+           MOVE "Alice Johnson" TO T-NAME(1)
+           MOVE "20"          TO T-AGE(1)
+           MOVE "A+"          TO T-GRADE(1)
+
+           MOVE "00002"       TO T-ID(2)
+           MOVE "Bob Smith"    TO T-NAME(2)
+           MOVE "21"          TO T-AGE(2)
+           MOVE "B"           TO T-GRADE(2)
+
+           MOVE "00003"       TO T-ID(3)
+           MOVE "Carol Lee"    TO T-NAME(3)
+           MOVE "19"          TO T-AGE(3)
+           MOVE "A"           TO T-GRADE(3)
+
+           OPEN OUTPUT STUDENT-FILE
+
+           PERFORM VARYING CNT FROM 1 BY 1 UNTIL CNT > WS-COUNT
+               STRING T-ID(CNT) DELIMITED BY SIZE ","
+                      T-NAME(CNT) DELIMITED BY SIZE ","
+                      T-AGE(CNT) DELIMITED BY SIZE ","
+                      T-GRADE(CNT) DELIMITED BY SIZE
+                   INTO STUDENT-REC
+               WRITE STUDENT-REC
+           END-PERFORM
+
+           CLOSE STUDENT-FILE
+
+           Display "Data written to students.csv successfully."
+           Display "Program completed."
+           
+           STOP RUN.
