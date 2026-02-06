@@ -1,0 +1,78 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COPYARRAY.
+       *> Program purpose:
+       *> This program demonstrates populating an in-memory table of student
+       *> records and writing those records out to a CSV file named students.csv.
+       *> It shows how to build CSV lines using STRING and write them with WRITE.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT STUDENT-FILE ASSIGN TO 'students.csv'
+               ORGANIZATION IS LINE SEQUENTIAL.
+           *> The SELECT statement maps the COBOL file name STUDENT-FILE
+           *> to the external file 'students.csv'. LINE SEQUENTIAL means
+           *> records are written as text lines.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  STUDENT-FILE.
+       01  STUDENT-REC       PIC X(200).
+           *> STUDENT-REC is the output record buffer (a single line up to 200 chars).
+           *> Each CSV row will be built into this field before WRITE.
+
+       WORKING-STORAGE SECTION.
+       01  WS-COUNT          PIC 9(3) VALUE 3.
+           *> WS-COUNT stores the number of populated student entries to write.
+           *> Change this value if you populate more or fewer entries.
+       01  CNT               PIC 9(3).
+           *> CNT is the loop counter used in the PERFORM.
+       01  STUDENT-TABLE.
+           05  STUDENT-ENTRY OCCURS 100 TIMES.
+               10 T-ID       PIC X(5).
+               10 T-NAME     PIC X(30).
+               10 T-AGE      PIC X(3).
+               10 T-GRADE    PIC X(2).
+           *> STUDENT-TABLE is an in-memory table with space for up to 100 entries.
+           *> Each entry contains fields for ID, NAME, AGE, and GRADE.
+           *> Note: field sizes (PIC) determine how values are stored and padded.
+           *> When building CSVs, DELIMITED BY SIZE causes the whole field
+           *> content (including trailing spaces) to be used; you may wish to
+           *> TRIM or use different field lengths if you want exact formatting.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           *> Populate table (example)
+           *> Here we move sample values into the first three table entries.
+           *> In a real program you might read these from input or another file.
+           MOVE "00001"       TO T-ID(1)
+           MOVE "Alice Johnson" TO T-NAME(1)
+           MOVE "20"          TO T-AGE(1)
+           MOVE "A+"          TO T-GRADE(1)
+
+           MOVE "00002"       TO T-ID(2)
+           MOVE "Bob Smith"    TO T-NAME(2)
+           MOVE "21"          TO T-AGE(2)
+           MOVE "B"           TO T-GRADE(2)
+
+           MOVE "00003"       TO T-ID(3)
+           MOVE "Carol Lee"    TO T-NAME(3)
+           MOVE "19"          TO T-AGE(3)
+           MOVE "A"           TO T-GRADE(3)
+
+           *> Open the output file for writing.
+           *> OPEN OUTPUT creates (or truncates) the file and prepares it for WRITE.
+           OPEN OUTPUT STUDENT-FILE
+
+           *> Loop over populated entries and write CSV lines.
+           *> PERFORM VARYING CNT FROM 1 BY 1 UNTIL CNT > WS-COUNT
+           *>   - Builds a CSV line by concatenating fields with commas using STRING
+           *>   - Places resulting line into STUDENT-REC
+           *>   - Writes STUDENT-REC to the file
+           PERFORM VARYING CNT FROM 1 BY 1 UNTIL CNT > WS-COUNT
+               STRING T-ID(CNT) DELIMITED BY SIZE ","
+                      T-NAME(CNT) DELIMITED BY SIZE ","
+                      T-AGE(CNT) DELIMITED BY SIZE ","
+                      T-GRADE(CNT) DELIMITED BY SIZE
+                   INTO STUDENT-REC
+               *> After STRING, STUDENT-REC contains: ID + "," + NAME + "," +*
