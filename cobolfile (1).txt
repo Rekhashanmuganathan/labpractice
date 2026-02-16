@@ -76,3 +76,11 @@
                       T-GRADE(CNT) DELIMITED BY SIZE
                    INTO STUDENT-REC
                *> After STRING, STUDENT-REC contains: ID + "," + NAME + "," +*
+
+           PERFORM VARYING I FROM 1 BY 1 UNTIL I > 3
+               PERFORM VARYING J FROM 1 BY 1 UNTIL J > 4
+                   PERFORM VARYING K FROM 1 BY 1 UNTIL K > 5
+                       MOVE I TO THREE-DIM-ARRAY (I J K)
+                   END-PERFORM
+               END-PERFORM
+           END-PERFORM.
