@@ -28,42 +28,56 @@ IDENTIFICATION DIVISION.
            05  REPORT-LINE       PIC X(80).
 
        WORKING-STORAGE SECTION.
+       01  APPLICANTS-DETAILS.
+           05  APPLICANTS-ARRAY OCCURS 10 TIMES.
+               10  APPLICANT-INFO OCCURS 5 TIMES.
+                   15  APPLICANT-NAME       PIC X(30).
+                   15  APPLICANT-AGE        PIC 99.
+                   15  APPLICANT-INCOME     PIC 9(7)V99.
+                   15  APPLICANT-CREDIT-SCORE PIC 999.
+
        01  PAGE-LINE-COUNTER     PIC 99 VALUE 0.
        01  PAGE-BREAK-LIMIT      PIC 99 VALUE 20.
+       01  WS-INDEX1             PIC 99 VALUE 0.
+       01  WS-INDEX2             PIC 99 VALUE 0.
 
        PROCEDURE DIVISION.
        MAIN-PROCESS.
            OPEN OUTPUT REPORT-FILE
 
-           DISPLAY "Enter Applicant Name: " WITH NO ADVANCING
-           ACCEPT APPLICANT-NAME
+           PERFORM VARYING WS-INDEX1 FROM 1 BY 1 UNTIL WS-INDEX1 > 10
+               PERFORM VARYING WS-INDEX2 FROM 1 BY 1 UNTIL WS-INDEX2 > 5
+                   DISPLAY "Enter Applicant Name: " WITH NO ADVANCING
+                   ACCEPT APPLICANTS-ARRAY (WS-INDEX1) (WS-INDEX2) APPLICANT-NAME
 
-           DISPLAY "Enter Applicant Age: " WITH NO ADVANCING
-           ACCEPT APPLICANT-AGE
+                   DISPLAY "Enter Applicant Age: " WITH NO ADVANCING
+                   ACCEPT APPLICANTS-ARRAY (WS-INDEX1) (WS-INDEX2) APPLICANT-AGE
 
-           DISPLAY "Enter Applicant Monthly Income: " WITH NO ADVANCING
-           ACCEPT APPLICANT-INCOME
+                   DISPLAY "Enter Applicant Monthly Income: " WITH NO ADVANCING
+                   ACCEPT APPLICANTS-ARRAY (WS-INDEX1) (WS-INDEX2) APPLICANT-INCOME
 
-           DISPLAY "Enter Applicant Credit Score: " WITH NO ADVANCING
-           ACCEPT APPLICANT-CREDIT-SCORE
+                   DISPLAY "Enter Applicant Credit Score: " WITH NO ADVANCING
+                   ACCEPT APPLICANTS-ARRAY (WS-INDEX1) (WS-INDEX2) APPLICANT-CREDIT-SCORE
 
-           PERFORM CHECK-APPROVAL
+                   PERFORM CHECK-APPROVAL
 
-           MOVE "Applicant: " TO REPORT-LINE
-           STRING REPORT-LINE DELIMITED BY SIZE APPLICANT-NAME DELIMITED BY SIZE INTO REPORT-LINE
-           WRITE REPORT-RECORD
+                   MOVE "Applicant: " TO REPORT-LINE
+                   STRING REPORT-LINE DELIMITED BY SIZE APPLICANTS-ARRAY (WS-INDEX1) (WS-INDEX2) APPLICANT-NAME DELIMITED BY SIZE INTO REPORT-LINE
+                   WRITE REPORT-RECORD
 
-           MOVE "Approval Status: " TO REPORT-LINE
-           STRING REPORT-LINE DELIMITED BY SIZE APPROVAL-STATUS DELIMITED BY SIZE INTO REPORT-LINE
-           WRITE REPORT-RECORD
+                   MOVE "Approval Status: " TO REPORT-LINE
+                   STRING REPORT-LINE DELIMITED BY SIZE APPROVAL-STATUS DELIMITED BY SIZE INTO REPORT-LINE
+                   WRITE REPORT-RECORD
 
-           ADD 1 TO PAGE-LINE-COUNTER
-           IF PAGE-LINE-COUNTER >= PAGE-BREAK-LIMIT
-               WRITE REPORT-RECORD FROM "--- PAGE BREAK ---"
-               MOVE 0 TO PAGE-LINE-COUNTER
-           END-IF
+                   ADD 1 TO PAGE-LINE-COUNTER
+                   IF PAGE-LINE-COUNTER >= PAGE-BREAK-LIMIT
+                       WRITE REPORT-RECORD FROM "--- PAGE BREAK ---"
+                       MOVE 0 TO PAGE-LINE-COUNTER
+                   END-IF
 
-           DISPLAY "Approval Status: " APPROVAL-STATUS
+                   DISPLAY "Approval Status: " APPROVAL-STATUS
+               END-PERFORM
+           END-PERFORM
 
            CLOSE REPORT-FILE
 
