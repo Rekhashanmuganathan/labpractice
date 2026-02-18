@@ -1,4 +1,4 @@
-       * Simple interactive calculator in COBOL with testing options
+* Simple interactive calculator in COBOL with testing options
        * Works with GnuCOBOL / OpenCOBOL and modern COBOL compilers
        * Compile (GnuCOBOL): cobc -x simple_calculator_with_tests.cob
        * Run: ./simple_calculator_with_tests
@@ -27,7 +27,7 @@
            ACCEPT WS-MODE
            IF WS-MODE = "T" OR WS-MODE = "t"
                PERFORM TEST-MODE
-               GO TO END-PROGRAM
+               PERFORM END-PROGRAM
            END-IF
 
            PERFORM UNTIL WS-ANSWER = "N" OR WS-ANSWER = "n"
@@ -37,7 +37,7 @@
                DISPLAY "Enter first number (eg 12.34): " WITH NO ADVANCING
                ACCEPT WS-FIRST-STR
                IF FUNCTION TRIM(WS-FIRST-STR) = "Q" OR FUNCTION TRIM(WS-FIRST-STR) = "q"
-                   GO TO END-PROGRAM
+                   PERFORM END-PROGRAM
                END-IF
                MOVE FUNCTION NUMVAL(FUNCTION TRIM(WS-FIRST-STR)) TO WS-FIRST-NUM
 
@@ -47,7 +47,7 @@
                DISPLAY "Enter second number (eg 5.0): " WITH NO ADVANCING
                ACCEPT WS-SECOND-STR
                IF FUNCTION TRIM(WS-SECOND-STR) = "Q" OR FUNCTION TRIM(WS-SECOND-STR) = "q"
-                   GO TO END-PROGRAM
+                   PERFORM END-PROGRAM
                END-IF
                MOVE FUNCTION NUMVAL(FUNCTION TRIM(WS-SECOND-STR)) TO WS-SECOND-NUM
 
