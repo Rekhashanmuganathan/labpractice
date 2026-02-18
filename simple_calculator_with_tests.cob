@@ -149,4 +149,5 @@
            END-EVALUATE.
 
        END-PROGRAM.
+           Display "End of program". 
            STOP RUN.
