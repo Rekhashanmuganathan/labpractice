@@ -1,7 +1,21 @@
-* Simple interactive calculator in COBOL with testing options
-       * Works with GnuCOBOL / OpenCOBOL and modern COBOL compilers
-       * Compile (GnuCOBOL): cobc -x simple_calculator_with_tests.cob
-       * Run: ./simple_calculator_with_tests
+      *>============================================================
+      *> PROGRAM: SIMPLE-CALCULATOR
+      *> PURPOSE: An interactive calculator program with automated
+      *>          testing capabilities. Supports basic arithmetic
+      *>          operations: addition, subtraction, multiplication,
+      *>          and division with error handling.
+      *> 
+      *> COMPATIBILITY: GnuCOBOL / OpenCOBOL and modern COBOL
+      *> COMPILE: cobc -x simple_calculator_with_tests.cob
+      *> RUN: ./simple_calculator_with_tests
+      *> 
+      *> FEATURES:
+      *>   - Interactive mode for user-driven calculations
+      *>   - Automated test mode for validation
+      *>   - Division by zero detection and handling
+      *>   - Support for decimal numbers
+      *>   - Exit option (press 'Q')
+      *>============================================================
 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. SIMPLE-CALCULATOR.
@@ -10,16 +24,35 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
+      *>============================================================
+      *> DATA VARIABLES DOCUMENTATION
+      *>============================================================
+       
+      *> Input Variables - Store user input as strings
        01  WS-FIRST-STR       PIC X(30) VALUE SPACES.
+           *> First operand entered by user (string format)
        01  WS-SECOND-STR      PIC X(30) VALUE SPACES.
+           *> Second operand entered by user (string format)
+       
+      *> Numeric Variables - Store converted numbers for calculation
        01  WS-FIRST-NUM       PIC S9(9)V9(9) VALUE 0.
+           *> First operand as numeric value (up to 9 digits, 9 decimals)
        01  WS-SECOND-NUM      PIC S9(9)V9(9) VALUE 0.
+           *> Second operand as numeric value (up to 9 digits, 9 decimals)
        01  WS-RESULT          PIC S9(18)V9(9) VALUE 0.
+           *> Result of calculation (up to 18 digits, 9 decimals)
+       
+      *> Operator and Control Variables
        01  WS-OPERATOR        PIC X        VALUE SPACE.
+           *> Arithmetic operator: +, -, *, or /
        01  WS-ANSWER          PIC X        VALUE "Y".
+           *> User response to continue: Y/N
        01  WS-ZERO-FLAG       PIC X        VALUE "N".
+           *> Error flag for division by zero detection: Y/N
        01  WS-MODE            PIC X        VALUE SPACE.
+           *> Program mode selection: I (Interactive) or T (Test)
        01  WS-TRIMMED         PIC X(30)    VALUE SPACES.
+           *> Variable for trimmed string operations
 
        PROCEDURE DIVISION.
        MAIN-LOOP.
